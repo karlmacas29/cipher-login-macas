@@ -39,7 +39,15 @@
     <hr>
     <div class="dropdown">
       <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg" alt="" width="32" height="32" class="rounded-circle me-2">
+        <img src="
+        <?php
+        if(!$picture){
+          echo "https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg";
+        }else{
+          echo $picture;
+        }
+        ?>
+        " alt="" width="32" height="32" class="rounded-circle me-2">
         <strong><?php echo $name; ?></strong>
       </a>
       <ul class="dropdown-menu dropdown-menu-light text-small shadow" aria-labelledby="dropdownUser1">

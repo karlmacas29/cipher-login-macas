@@ -1,7 +1,7 @@
 <?php 
 include "./data/config.php";
 
-if(isset($_SESSION['id'])){
+if(isset($_SESSION['name'])){
   header('Location: ./cipherWorld.php');
 }
 
@@ -72,6 +72,118 @@ if(isset($_POST['userEnt'])){
     }
   }
   //echo "<br>".$_SESSION['login_attempts'];
+
+  //google api login
+  require_once 'vendor/autoload.php';
+
+  $google_client = new Google_Client();
+  $google_client->setClientId('503349565053-ru1nnq3of12gp5cot5a0sjfjbjusk0rb.apps.googleusercontent.com'); //Define your ClientID
+  $google_client->setClientSecret('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'); //Define your Client Secret Key
+  $google_client->setRedirectUri('http://localhost/sample/'); //Define your Redirect Uri
+  $google_client->addScope('email');
+  $google_client->addScope('profile');
+
+  if(isset($_GET["code"])){
+   $token = $google_client->fetchAccessTokenWithAuthCode($_GET["code"]);
+  
+   
+  if(!isset($token["error"])){
+    $google_client->setAccessToken($token['access_token']);
+    $_SESSION['access_token']=$token['access_token'];
+    $google_service = new Google_Service_Oauth2($google_client);
+    $data = $google_service->userinfo->get();
+    $current_datetime = date('Y-m-d H:i:s');
+   
+   // print_r($data);
+   $_SESSION['first_name']=$data['given_name'];
+   $_SESSION['last_name']=$data['family_name'];
+   $_SESSION['email_address']=$data['email'];
+   $_SESSION['profile_picture']=$data['picture'];
+
+
+   $_SESSION['name'] = $_SESSION['first_name'];
+   $_SESSION['picture'] = $_SESSION['profile_picture'];
+   header('Location: cipherWorld.php');
+  }
+}
+
+  $login_button = '';
+  
+ // echo $_SESSION['access_token'];
+  
+  
+	//  echo 'test';
+	  
+   $login_button = '<a href="'.$google_client->createAuthUrl().'" class="btn btn-danger"> <i class="bi bi-google"></i> Google</a>';
+   
+  
+  //facebook api login
+  require_once 'another-conf.php';
+
+  $permissions = ['email']; //optional
+
+  if (isset($accessToken))
+  {
+    if (!isset($_SESSION['facebook_access_token'])) 
+    {
+      //get short-lived access token
+      $_SESSION['facebook_access_token'] = (string) $accessToken;
+      
+      //OAuth 2.0 client handler
+      $oAuth2Client = $fb->getOAuth2Client();
+      
+      //Exchanges a short-lived access token for a long-lived one
+      $longLivedAccessToken = $oAuth2Client->getLongLivedAccessToken($_SESSION['facebook_access_token']);
+      $_SESSION['facebook_access_token'] = (string) $longLivedAccessToken;
+      
+      //setting default access token to be used in script
+      $fb->setDefaultAccessToken($_SESSION['facebook_access_token']);
+    } 
+    else 
+    {
+      $fb->setDefaultAccessToken($_SESSION['facebook_access_token']);
+    }
+    
+    
+    //redirect the user to the index page if it has $_GET['code']
+    if (isset($_GET['code'])) 
+    {
+      header('Location: ./');
+    }
+    
+    
+    try {
+      $fb_response = $fb->get('/me?fields=name,first_name,last_name,email');
+      $fb_response_picture = $fb->get('/me/picture?redirect=false&height=200');
+      
+      $fb_user = $fb_response->getGraphUser();
+      $picture = $fb_response_picture->getGraphUser();
+      
+      $_SESSION['fb_user_id'] = $fb_user->getProperty('id');
+      $_SESSION['fb_user_name'] = $fb_user->getProperty('name');
+      $_SESSION['fb_user_email'] = $fb_user->getProperty('email');
+      $_SESSION['fb_user_pic'] = $picture['url'];
+      
+      $_SESSION['name'] = $_SESSION['fb_user_name'];
+      $_SESSION['picture'] = $_SESSION['fb_user_pic'];
+      header('Location: cipherWorld.php');
+
+    } catch(Facebook\Exceptions\FacebookResponseException $e) {
+      echo 'Facebook API Error: ' . $e->getMessage();
+      session_destroy();
+      // redirecting user back to app login page
+      header("Location: ./index.php");
+      exit;
+    } catch(Facebook\Exceptions\FacebookSDKException $e) {
+      echo 'Facebook SDK Error: ' . $e->getMessage();
+      exit;
+    }
+  } 
+  else 
+  {	
+    // replace your website URL same as added in the developers.Facebook.com/apps e.g. if you used http instead of https and you used
+    $fb_login_url = $fb_helper->getLoginUrl('http://localhost/sample/', $permissions);
+  }
 ?>
 <!doctype html>
 <html lang="en">
@@ -108,14 +220,14 @@ if(isset($_POST['userEnt'])){
               
               ?>
                 <div class="form-floating px-1" id="inDiv">
-                    <input type="text" class="form-control" id="uvalid" name="username" value="<?php echo @$user?>" placeholder="username" required>
+                    <input type="text" class="form-control" id="uvalid" name="username" value="<?php echo @$user?>" placeholder="username">
                     <label for="uvalid" id="lb1">Username</label>
                     <div class="invalid-feedback" id="vld">
                       
                     </div>
                 </div>
                 <div class="form-floating px-1" id="inDiv1">
-                    <input type="password" class="form-control " id="pvalid" name="password" placeholder="Password" required>
+                    <input type="password" class="form-control " id="pvalid" name="password" placeholder="Password">
                     <label for="pvalid" id="lb2">Password</label>
                     <div class="invalid-feedback" id="vld1">
                       
@@ -123,6 +235,11 @@ if(isset($_POST['userEnt'])){
                 </div>
                 <div class="d-grid col-12">
                     <button class="btn btn-secondary disabled" id="loginBtn" name="userEnt">Login</button>
+                </div>
+                <div class="d-grid gap-2 ">
+                    <a href="<?php echo $fb_login_url;?>" class="btn btn-primary" ><i class="bi bi-facebook"></i> Facebook</a>
+                    
+                    <?php echo $login_button; ?>
                 </div>
             </form>
             </div>
@@ -196,6 +313,7 @@ if(isset($_POST['userEnt'])){
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./script/jquery.min.js"></script>
+
     
     <script type="text/javascript">
        $(document).ready(function(){

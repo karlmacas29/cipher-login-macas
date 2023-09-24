@@ -1,11 +1,14 @@
 <?php
    include "./data/config.php";
    // Check user login or not
-   if(!isset($_SESSION['id'])){
+   if(!isset($_SESSION['name'])){
        header('Location: ./index.php');
+       exit();
    }
-       $id = $_SESSION['id'];
+       //username
        $name = $_SESSION['name'];
+       //from fbandgoogle
+       @$picture = $_SESSION['picture'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
