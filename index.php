@@ -236,7 +236,9 @@ if(isset($_POST['userEnt'])){
                 <div class="d-grid col-12">
                     <button class="btn btn-secondary disabled" id="loginBtn" name="userEnt">Login</button>
                 </div>
-                <div class="d-grid gap-2 ">
+                
+                <div class="d-grid gap-2 col-6 mx-auto">
+                <h5 class="card-title text-center">Login with:</h5>
                     <a href="<?php echo $fb_login_url;?>" class="btn btn-primary" ><i class="bi bi-facebook"></i> Facebook</a>
                     
                     <?php echo $login_button; ?>
