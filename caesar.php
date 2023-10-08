@@ -2,13 +2,14 @@
    include "./data/config.php";
    // Check user login or not
    if(!isset($_SESSION['name'])){
-       header('Location: ./index.php');
-       exit();
-   }
-       //username
-       $name = $_SESSION['name'];
-       //from fbandgoogle
-       @$picture = $_SESSION['picture'];
+    header('Location: ./index.php');
+    exit();
+    }
+    //username
+    $name = $_SESSION['name'];
+    //from fbandgoogle
+    @$picture = $_SESSION['picture'];
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,7 +42,11 @@
                     </div>
             </div>
             </nav>
-
+            <div class="loader">
+                <li class="ball"></li>
+                <li class="ball"></li>
+                <li class="ball"></li>
+            </div>
             <div class="container mt-5">
         
         <div class="row justify-content-center">

@@ -1,5 +1,5 @@
-<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-primary " style="height: 100vh;" id="sidebar1">
-    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-primary " style="height: 100vh; " id="sidebar1">
+    <a href="./cipherWorld.php" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
       <h2><i class="bi bi-arrow-left-right p-3"></i></h2>
       <span class="fs-4">Cipher Web</span>
     </a>

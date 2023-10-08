@@ -1,18 +1,17 @@
 <?php
    include "./data/config.php";
-   
-       // Check user login or not
-       if(!isset($_SESSION['name'])){
-           header('Location: ./index.php');
-           exit();
-       }
-   
-       
-       //username
-       $name = $_SESSION['name'];
-       //from fbandgoogle
-       @$picture = $_SESSION['picture'];
+        // Check user login or not
+        if(!isset($_SESSION['name'])){
+            header('Location: ./index.php');
+            exit();
+            }
+            //username
+            $name = $_SESSION['name'];
+            //from fbandgoogle
+            @$picture = $_SESSION['picture'];
+            
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,6 +30,7 @@
         </div>
         <div class="col-md-9 overflow-auto p-0" style="height: 100vh;">
             <!-- As a heading -->
+            
             <nav class="navbar sticky-top bg-primary-subtle " id="nav1">
             <div class="container bg-primary-subtle" id="nav2">
 
@@ -43,9 +43,16 @@
             </div>
             
             </nav>
+
             
+            <div class="loader">
+                <li class="ball"></li>
+                <li class="ball"></li>
+                <li class="ball"></li>
+            </div>
 
             <div class="container mx-auto p-2" id="darkbg">
+                
                 <h2 class="text-center">Available Cipher</h2>
                 <div class="row px-4 g-2 text-center border-1">
                     <div class="col">
@@ -82,7 +89,7 @@
             </div>
         </div>
     </div>
-
+       
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
